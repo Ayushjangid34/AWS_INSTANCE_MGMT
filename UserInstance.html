@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running Instance</title>
+    <style>
+        body {
+          background: linear-gradient(to right, #6343ef, #dc1a1a); /* Gradient background */
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .console {
+            width: 80%;
+            height: 500px;
+            border: 2px solid blue;
+            border-radius: 10px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: black;
+            color: white;
+            font-size: 16px;
+            white-space: pre-wrap;
+        }
+
+        .command-input {
+            width: 80%;
+            max-width: 600px;
+            padding: 10px;
+            border: 2px solid blue;
+            border-top: none;
+            background-color: black;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        .command-input:focus {
+            border-color: blue;
+        }
+
+    </style>
+</head>
+<body>
+    <h2 id="publicip"></h2>
+    <div class="console" id="console">
+        <div id="consolepre"></div>
+    </div>
+    <input class="command-input" id="getcommand" placeholder="Enter command">
+    <script>
+       var command;
+        document.getElementById("getcommand").addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                command = document.getElementById("getcommand").value;
+                ConsoleUpdate();
+            }
+        });
+
+        function ConsoleUpdate() {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (this.readyState === 4 && this.status === 200) {
+                    const consolePre = document.getElementById("consolepre");
+
+                    const newCommand = document.createElement("div");
+                    newCommand.textContent = "> " + command;
+                    newCommand.style.color = "green"; // Set the color to green
+                    consolePre.appendChild(newCommand);
+
+                    const response = document.createElement("div");
+                    response.textContent = xhr.responseText;
+                    consolePre.appendChild(response);
+
+                    document.getElementById("consolepre").scrollTop = document.getElementById("consolepre").scrollHeight; // Scroll to bottom
+                }
+            };
+
+            xhr.open("POST", "/consoleupdate", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            const commandObject = { name: command };
+            const toJson = JSON.stringify(commandObject);
+            xhr.send(toJson);
+            document.getElementById("getcommand").value = "";
+        }
+
+        function getip() {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (this.readyState === 4 && this.status === 200) {
+                    document.getElementById("publicip").innerHTML = "EC2 Instance Public Ip : " + xhr.responseText;
+                }
+            };
+            xhr.open("POST", "/CurrentIp", true);
+            xhr.send();
+        }
+
+        getip(); // Call getip function when the page loads
+    </script>
+</body>
+</html>

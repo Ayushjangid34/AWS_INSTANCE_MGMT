@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launch Instance</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #6343ef, #dc1a1a);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 400px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button[type="reset"] {
+            background-color: #dc3545;
+            margin-left: 10px;
+        }
+
+        button[type="reset"]:hover {
+            background-color: #bd2130;
+        }
+
+        button, select {
+            display: block;
+        }
+
+        button[type="submit"], button[type="reset"] {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <form method="post" action="/launchinstance">
+        <label for="os">Choose an OS:</label>
+        <select name="os" id="os">
+            <option value="ami-00beae93a2d981137">Amazon Linux 2023 AMI 2023.4.20240528.0 x86_64 HVM kernel-6.1 Free tier eligible</option>
+            <option value="ami-04b70fa74e45c3917">Canonical, Ubuntu, 24.04 LTS, amd64 noble image build on 2024-04-23 Free tier eligible</option>
+            <option value="ami-0fe630eb857a6ec83">Red Hat Linux 9 Provided by Red Hat, Inc. Free tier eligible</option>
+        </select>
+        <label for="instance_type">Choose instance type:</label>
+        <select name="instance_type" id="instance_type">
+            <option value="t2.micro">t2.micro</option>
+            <option value="t2.nano">t2.nano **paid</option>
+            <option value="t2.small">t2.small **paid</option>
+        </select>
+        <label for="access">Access:</label>
+        <select name="access" id="access">
+            <option value="sg-0de8112c7c9dde575">Only me</option>
+            <option value="sg-0c2f76a75849adfe7">me + http traffic from web</option>
+        </select>
+        <label for="instname">Instance Name:</label>
+        <input type="text" name="instname" id="instname">
+        <label for="subid">Region:</label>
+        <select name="subid" id="subid">
+            <option value="subnet-0e1e273ac7e7ae7ae">us-east-1a</option>
+            <option value="subnet-0330d32d8b6cdde3d">us-east-1b</option>
+            <option value="subnet-0397712ef545e54d2">us-east-1c</option>
+        </select>
+        <button onclick="alert('Instance Created.... Please wait to load the page')" type="submit">Launch Instance</button>
+        <button type="reset">Load Default</button>
+    </form>
+</body>
+</html>

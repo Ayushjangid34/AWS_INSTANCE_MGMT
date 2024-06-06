@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Instances</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f4;
+            background: linear-gradient(to right, #6343ef, #dc1a1a);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 50px;
+            box-sizing: border-box;
+        }
+
+        .navbar .logo {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .navbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        .navbar ul li a:hover {
+            color: #ffa500;
+        }
+
+        .container {
+            padding-top: 0px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+        }
+
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            margin: 20px 0;
+        }
+
+        .content {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 110%;
+            max-width: 1000px;
+            margin-top: 20px;
+        }
+
+        .content p {
+            margin: 20px 0;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .button {
+            border: 2px solid #eeeeee;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: transparent;
+            color: #f5f5f5;
+            border-radius: 5px;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .button:hover {
+            background: #ff000060;
+            color: #fff;
+        }
+
+        .table-container {
+            margin-top: 0px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #fff;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        form input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form input[type="submit"] {
+            border: 2px solid #eeeeee;
+            padding: 10px 20px;
+            background: transparent;
+            color: #f5f5f5;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        form input[type="submit"]:hover {
+            background: #ff000060;
+            color: #fff;
+        }
+    </style>
+</head>
+<body onload="update()">
+    <div class="navbar">
+        <div class="logo">AWS EC2 INSTANCES</div>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Contact Info</a></li>
+        </ul>
+    </div>
+    <div class="container">
+        <h1 id="welcome"></h1>
+        <div class="content">
+            <h3>- - - - - -  ACTIVE INSTANCES - - - - -</h3>
+            <div id="table" class="table-container"></div>
+            <a href="/createinstance" class="button">Create New Instance</a>
+        </div>
+        <form method="post" action="/runinstance">
+            <input type="text" name="instanceid" placeholder="Instance ID" id="" required>
+            <input type="submit" name="launch" value="Use Instance">
+        </form>
+    </div>
+</body>
+<script>
+    function update() {
+        fetch("/dashbordinfo", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(detail => {
+            document.getElementById("welcome").innerHTML = "Welcome " + detail.FirstName + " " + detail.LastName;
+            console.log(detail);
+        })
+        .catch(error => {
+            console.error("Request failed:", error);
+        });
+        tableupdate();
+    }
+
+    function tableupdate() {
+    const myhttp = new XMLHttpRequest();
+    myhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            var instancetabledetail = JSON.parse(myhttp.responseText);
+            console.log(instancetabledetail);
+            let myTable = document.querySelector('#table');
+            let employees = instancetabledetail; 
+            var headers = ['Instance Name', 'Instance ID', 'Type', 'Security Group', 'Subnet ID'];
+            let table = document.createElement('table');
+            let headerRow = document.createElement('tr');
+            headers.forEach(headerText => {
+                let header = document.createElement('th');
+                let textNode = document.createTextNode(headerText);
+                header.appendChild(textNode);
+                headerRow.appendChild(header);
+            });
+            table.appendChild(headerRow);
+            employees.forEach(emp => {
+                let row = document.createElement('tr');
+                for (let key in emp) {
+                    if ((key !== "_id" && key !== "Email") && key!="OS") {
+                        let cell = document.createElement('td');
+                        let textNode = document.createTextNode(emp[key]);
+                        cell.appendChild(textNode);
+                        row.appendChild(cell);
+                    }
+                }
+                table.appendChild(row);
+            });
+            myTable.appendChild(table);
+        }
+    }
+    myhttp.open("POST", "/Instanceinfo", true);
+    myhttp.send();
+}
+
+</script>
+</html>
