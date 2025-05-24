@@ -1,0 +1,163 @@
+.container {
+    margin: 80px auto 0;
+    padding: 20px 3%;
+    width: 94%;
+    max-width: 1400px;
+    box-sizing: border-box;
+    flex: 1;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.launch-btn, .connect-btn, .action-btn {
+    padding: 12px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+
+.launch-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.connect-btn, .action-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.action-btn::after {
+    content: "▼";
+    margin-left: 10px;
+}
+
+.launch-btn:hover, 
+.connect-btn:not(.disabled):hover,
+.action-btn:not(.disabled):hover {
+    border-color: #00ff88;
+    color: #00ff88;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.full-width-table {
+    width: 100%;
+    overflow-x: auto;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+table {
+    width: 100%;
+    min-width: 1200px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+th {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.running { background: #28a745; }
+.stopped { background: #dc3545; }
+.pending { background: #ffc107; color: #000; }
+.terminated { background: gray;}
+
+
+.action-dropdown {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+}
+
+.action-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    min-width: 160px;
+    z-index: 1000;
+    margin-top: 5px;
+}
+
+.action-menu.show {
+    display: block;
+}
+
+.action-item {
+    width: 100%;
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.danger {
+    color: #ff4444;
+}
+
+.danger:hover {
+    background: rgba(255, 68, 68, 0.1) !important;
+}
+
+.no-instances-msg {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+button#actionBtn {
+  font-size: 16px; /* Increase font size */
+  padding: 16px 30px; /* Adjust padding */
+}
+
+@media (max-width: 768px) {
+    .button-group {
+        gap: 10px;
+    }
+    
+    .launch-btn, .connect-btn, .action-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}

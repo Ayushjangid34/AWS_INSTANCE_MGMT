@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Instances - Personalize Cloud</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../static/css/common.css" />
+  <link rel="stylesheet" href="../static/css/dashboard.css" />
+  <!-- Add this inside <head> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">AWS EC2 INSTANCES</div>
+    <button class="menu-toggle" id="menuToggle">&#9776;</button>
+    <ul id="navLinks">
+      <li><a href="/">Home</a></li>
+      <li><a href="#" onclick="logout(event)">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="button-group">
+      <a href="/user/createinstance" class="launch-btn">Launch Instance</a>
+      <div class="action-dropdown">
+        <button class="action-btn disabled" id="actionBtn">Actions</button>
+        <div class="action-menu" id="actionMenu">
+          <button class="action-item" onclick="performAction('start')">Start</button>
+          <button class="action-item" onclick="performAction('stop')">Stop</button>
+          <button class="action-item" onclick="performAction('reboot')">Reboot</button>
+          <!-- <button class="action-item" onclick="performAction('hibernate')">Hibernate</button> -->
+          <button class="action-item danger" onclick="performAction('terminate')">Terminate(Delete)</button>
+        </div>
+      </div>
+      <button class="connect-btn disabled" id="connectBtn">Connect</button>
+    </div>
+
+    <!-- Instances Table -->
+    <div class="full-width-table">
+      <table>
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="selectAll" /></th>
+            <th>Instance Name</th>
+            <th>Instance ID</th>
+            <th>Status</th>
+            <th>Type</th>
+            <th>Security Group</th>
+            <th>Launch Time</th>
+            <th>OS</th>
+          </tr>
+        </thead>
+        <tbody id="instancesBody">
+          <!-- Rows injected by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="/static/js/common.js"></script>
+  <script>
+    const instancesBody = document.getElementById('instancesBody');
+    const selectAll    = document.getElementById('selectAll');
+    const actionBtn    = document.getElementById('actionBtn');
+    const actionMenu   = document.getElementById('actionMenu');
+    const connectBtn   = document.getElementById('connectBtn');
+
+    // Load and render instances
+    async function loadInstances() {
+      try {
+        const res = await fetch('/user/getInstDetails');
+        const { instances } = await res.json();
+        instancesBody.innerHTML = '';
+
+        instances.forEach(inst => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><input type="checkbox" class="instance-checkbox" data-id="${inst.instanceId}"></td>
+            <td>${inst.instanceName}</td>
+            <td>${inst.instanceId}</td>
+            <td><span class="status ${inst.status.toLowerCase()}">${capitalize(inst.status)}</span></td>
+            <td>${inst.type}</td>
+            <td>${inst.securityGroup}</td>
+            <td>${new Date(inst.launchTime).toLocaleString()}</td>
+            <td>${inst.os}</td>
+          `;
+          instancesBody.appendChild(tr);
+        });
+
+        wireCheckboxes();
+      } catch (e) {
+        console.error('Failed to load instances', e);
+        showErrorToast('Failed to load instances');
+      }
+    }
+
+    // Capitalize helper
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+
+    // Set up checkbox logic & button enabling
+    function wireCheckboxes() {
+      const checkboxes = Array.from(document.querySelectorAll('.instance-checkbox'));
+
+      function updateButtons() {
+        const checked = checkboxes.filter(cb => cb.checked);
+
+        // Enable Actions if ≥1 selected
+        if (checked.length) actionBtn.classList.remove('disabled');
+        else                actionBtn.classList.add('disabled');
+
+        // Enable Connect if exactly 1 selected
+        if (checked.length === 1) connectBtn.classList.remove('disabled');
+        else                      connectBtn.classList.add('disabled');
+
+        // Hide dropdown if no instances selected
+        if (!checked.length) actionMenu.classList.remove('show');
+      }
+
+      checkboxes.forEach(cb => cb.addEventListener('change', updateButtons));
+      selectAll.addEventListener('change', () => {
+        checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        updateButtons();
+      });
+    }
+
+    // Toggle action dropdown
+    actionBtn.addEventListener('click', () => {
+      if (!actionBtn.classList.contains('disabled')) {
+        actionMenu.classList.toggle('show');
+      }
+    });
+    // Close dropdown when clicking outside
+    window.addEventListener('click', e => {
+      if (!e.target.closest('.action-dropdown')) {
+        actionMenu.classList.remove('show');
+      }
+    });
+
+    // Perform Start/Stop/Reboot/Hibernate/Terminate
+    async function performAction(action) {
+      const selected = Array.from(document.querySelectorAll('.instance-checkbox:checked'))
+                             .map(cb => cb.dataset.id);
+      if (!selected.length) return;
+
+      console.log(selected, action);
+
+      try {
+        const res = await fetch(`/user/action`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            action: action,
+            instanceIds: selected 
+          })
+        });
+        const result = await res.json();
+        if (res.ok) showSuccessToast(result.message || `${capitalize(action)} successful`);
+        else        showErrorToast(result.message || `${capitalize(action)} failed`);
+      } catch (err) {
+        console.error(err);
+        showErrorToast(`${capitalize(action)} error`);
+      } finally {
+        loadInstances();
+      }
+    }
+
+    // Connect to a single instance
+    function connectToInstance() {
+      const checked = document.querySelectorAll('.instance-checkbox:checked');
+      if (checked.length !== 1) return;
+      const id = checked[0].dataset.id;
+      window.open(`/user/terminal/${id}`, '_blank');
+    }
+    connectBtn.addEventListener('click', () => {
+      if (!connectBtn.classList.contains('disabled')) {
+        connectToInstance();
+      }
+    });
+
+    
+
+    // Initial load
+    loadInstances();
+  </script>
+
+<!-- Add this before closing </body> -->
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</body>
+</html>

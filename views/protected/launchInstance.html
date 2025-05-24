@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Launch Instance - Personalize Cloud</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../static/css/common.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+
+    <link rel="stylesheet" href="../static/css/launchInstance.css" />
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="/static/js/common.js" defer></script>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="logo">AWS EC2 INSTANCES</div>
+      <button class="menu-toggle" id="menuToggle">&#9776;</button>
+      <ul id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/user/dashboard">Dashboard</a></li>
+      <li><a href="#" onclick="logout(event)">Logout</a></li>
+
+      </ul>
+    </nav>
+
+    <!-- Instance Launch Form -->
+    <form id="launchForm" class="instance-form">
+      <label for="os">Choose an OS:</label>
+      <select name="ami_name" id="os" required>
+        <option value="amzn2-ami-kernel-5.10-hvm-2.0.20250405.0-x86_64-gp2">Amazon Linux 2 Kernel 5.10 AMI 2.0.20250405.0 x86_64 HVM gp2</option>
+        <option value="al2023-ami-2023.7.20250331.0-kernel-6.1-x86_64">Amazon Linux 2023 AMI 2023.7.20250331.0 x86_64 HVM kernel-6.1</option>
+        <option value="ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20250305">Ubuntu 22.04 Jammy</option>
+        <option value="ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20250305">Ubuntu 24.04 Noble</option>
+        <option value="debian-12-amd64-20250316-2053">Debian 12 (20250316-2053)</option>
+        <option value="RHEL-9.5.0_HVM-20250313-x86_64-0-Hourly2-GP3">RHEL 9.5 x86_64 HVM SSD</option>
+        <option value="suse-sles-15-sp6-v20250130-hvm-ssd-x86_64">SUSE Linux Enterprise Server 15 SP6</option>
+      </select>
+
+      <label for="instance_type">Choose instance type:</label>
+      <select name="instance_type" id="instance_type" required>
+        <option value="t2.micro">t2.micro</option>
+        <option value="t2.small">t2.small</option>
+        <option value="t2.medium">t2.medium</option>
+        <option value="t2.large">t2.large</option>
+        <option value="t3.micro">t3.micro</option>
+        <option value="t3.small">t3.small</option>
+        <option value="t3.medium">t3.medium</option>
+        <option value="t3.large">t3.large</option>
+      </select>
+
+      <label for="access">Access:</label>
+      <select name="security" id="access" required>
+        <option value="sg-ssh-only">SSH ONLY</option>
+        <option value="sg-ssh-web">SSH + WEB (HTTP/S)</option>
+      </select>
+
+      <label for="instname">Instance Name:</label>
+      <input type="text" name="instance_name" id="instname" required pattern="[a-zA-Z0-9-_]{1,128}" title="Alphanumeric, dashes, underscores (max 128 chars)" />
+
+      <button type="submit">Launch Instance</button>
+      <button type="reset">Load Default</button>
+    </form>
+
+    <script>
+      const form = document.getElementById('launchForm');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+          ami_name: form.os.value,
+          instance_type: form.instance_type.value,
+          security: form.access.value,
+          instance_name: form.instname.value
+        };
+
+        try {
+          const response = await fetch('/user/launchinstance', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            showSuccessToast(result.message || 'Instance launched successfully!');
+            setTimeout(() => {
+              window.location.href = "/user/dashboard"; // Change path if needed
+            }, 5000);
+          } else {
+            showErrorToast(result.message || 'Failed to launch instance.');
+          }
+        } catch (err) {
+          showErrorToast("Unexpected error occurred. Please try again.");
+        }
+      });
+    </script>
+  </body>
+</html>

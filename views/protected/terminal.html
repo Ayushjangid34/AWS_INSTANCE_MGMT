@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Running Instance - Personalize Cloud</title>
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/terminal.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+    <script src="https://unpkg.com/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="logo">AWS EC2 INSTANCES</div>
+      <button class="menu-toggle" id="menuToggle">&#9776;</button>
+      <ul id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/user/dashboard">Dashboard</a></li>
+        <li><a href="#" onclick="logout(event)">Logout</a></li>
+
+      </ul>
+    </nav>
+    <div class="console" id="console" aria-label="Terminal output area"></div>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/terminal.js"></script>
+  </body>
+</html>

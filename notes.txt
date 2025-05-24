@@ -1,0 +1,43 @@
+-----------------------------------------images(amis)--------------------------------------------------
+
+
+Name: 'suse-sles-15-sp6-v20250130-hvm-ssd-x86_64',
+Description: 'SUSE Linux Enterprise Server 15 SP6 (HVM, 64-bit, SSD-Backed)',
+
+
+Name: 'amzn2-ami-kernel-5.10-hvm-2.0.20250405.0-x86_64-gp2',
+Description: 'Amazon Linux 2 Kernel 5.10 AMI 2.0.20250405.0 x86_64 HVM gp2',
+
+
+Name: 'RHEL-9.5.0_HVM-20250313-x86_64-0-Hourly2-GP3',
+Description: 'Provided by Red Hat, Inc.',
+
+
+Name: 'ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20250305',
+Description: 'Canonical, Ubuntu, 22.04, amd64 jammy image',
+
+
+Name: 'al2023-ami-2023.7.20250331.0-kernel-6.1-x86_64',
+Description: 'Amazon Linux 2023 AMI 2023.7.20250331.0 x86_64 HVM kernel-6.1',
+
+
+Name: 'debian-12-amd64-20250316-2053',
+Description: 'Debian 12 (20250316-2053)',
+
+
+Name: 'ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20250305',
+Description: 'Canonical, Ubuntu, 24.04, amd64 noble image',
+
+
+
+
+
+
+------------------------  Provided EC2 Types( all types support above amis )  ------------------------------
+
+["t2.micro", "t2.large", "t2.medium", "t2.small", "t3.micro", "t3.large", "t3.medium", "t3.small"]
+
+
+
+
+

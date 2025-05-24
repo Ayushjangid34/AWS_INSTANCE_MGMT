@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Personalize Cloud</title>
+  <link rel="stylesheet" href="../static/css/common.css" />
+  <link rel="stylesheet" href="../static/css/signup.css" />
+
+  <!-- Toastify -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+  <!-- Common script with toast functions -->
+  <script src="/static/js/common.js" defer></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">AWS EC2 INSTANCES</div>
+    <button class="menu-toggle" id="menuToggle">&#9776;</button>
+    <ul id="navLinks">
+      <li><a href="/">Home</a></li>
+      <li><a href="/signin">Login</a></li>
+    </ul>
+  </nav>
+
+  <div class="form-container">
+    <h2>Sign Up</h2>
+    <form id="signupForm" autocomplete="on">
+      <input type="text" name="name" placeholder="Full Name" required pattern="[A-Za-z\s]+" title="Please enter your full name using letters and spaces only" autocomplete="name" />
+      <input type="tel" name="mobile" placeholder="Mobile" required pattern="[0-9]+" autocomplete="tel" />
+      <input type="email" name="email" placeholder="Email" required autocomplete="email" />
+      <input type="password" name="password" placeholder="Password" required autocomplete="new-password" />
+      <input type="submit" value="Signup" />
+    </form>
+  </div>
+  <script>
+    const signupForm = document.getElementById("signupForm");
+    signupForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(signupForm);
+      const data = Object.fromEntries(formData.entries());
+      try {
+        const res = await fetch("/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (res.ok) {
+          showSuccessToast(result.message || "Signup successful!");
+          setTimeout(() => {
+            window.location.href = result.redirect || "/signin";
+          }, 2000);
+        } else {
+          showErrorToast(result.error || result.message || "Signup failed!");
+        }
+      } catch (error) {
+        showErrorToast("Server error. Please try again later.");
+      }
+    });
+  </script>
+</body>
+</html>

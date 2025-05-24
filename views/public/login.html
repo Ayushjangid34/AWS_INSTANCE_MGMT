@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Personalize Cloud</title>
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <link rel="stylesheet" href="/static/css/login.css" />
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="/static/js/common.js" defer></script>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="logo">AWS EC2 INSTANCES</div>
+      <button class="menu-toggle" id="menuToggle">&#9776;</button>
+      <ul id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/signup">SignUp</a></li>
+      </ul>
+    </nav>
+
+    <div class="form-container">
+      <h2>Login</h2>
+      <form id="loginForm" autocomplete="on">
+        <input type="email" name="email" placeholder="Email" required autocomplete="username" />
+        <input type="password" name="password" placeholder="Password" required autocomplete="current-password" />
+        <input type="submit" value="Login" />
+      </form>
+    </div>
+    <script>
+      const loginForm = document.getElementById("loginForm");
+      loginForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const formData = new FormData(loginForm);
+        const data = Object.fromEntries(formData.entries());
+        try {
+          const res = await fetch("/auth/signin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+          });
+          const result = await res.json();
+          if (res.ok) {
+            showSuccessToast(result.message || "Login successful!");
+            setTimeout(() => {
+              window.location.href = result.redirect || "/user/dashboard";
+            }, 1000);
+          } else {
+            showErrorToast(result.error || result.message || "Invalid credentials.");
+          }
+        } catch (err) {
+          showErrorToast("Server error. Please try again later.");
+        }
+      });
+    </script>
+  </body>
+</html>

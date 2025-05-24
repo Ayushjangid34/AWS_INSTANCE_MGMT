@@ -1,0 +1,58 @@
+/* InstanceDetails.css */
+body {
+    font-family: "Arial", sans-serif;
+    background: linear-gradient(to right, #6343ef, #dc1a1a);
+    padding-top: 80px; /* Space for fixed navbar */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.instance-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    margin-top: 20px;
+}
+
+.instance-form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.instance-form select,
+.instance-form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.instance-form button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.instance-form button:hover {
+    background-color: #0056b3;
+}
+
+
+label {
+    color: black; /* Or any other visible color */
+  }
