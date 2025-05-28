@@ -8,14 +8,14 @@ I created this backend heavy project with minimal frontend(prototype) after pers
 
 ## 🔑 Key Features
 
-- **Automated Infrastructure Setup:** Automatically provisions VPC, subnet, security groups, and other AWS resources on first run, storing configuration in `infra-config.json`.
+- **Automated Infrastructure Setup:** Automatically setup VPC, subnet, security groups, and other AWS resources on first run, storing configuration in `infra-config.json`.
 - **Resource Validation:** Detects and warns if previous AWS resources exist without a config file, prompting manual intervention.
 - **User Key Pairs:** Generates a unique SSH key pair for each user on every Signup, storing key material securely and encrypted.
 - **Instance Management:** Users can launch, start, stop, reboot, and terminate their own EC2 instances via a web interface.
 - **In-Browser SSH:** Users can SSH into their instances directly from the application—no need for external SSH clients.
 - **Activity Logging:** All user actions can be recorded for audit and troubleshooting purposes.
 - **MVC Architecture:** Clean separation of concerns using Controllers, Models, Routes, Middlewares, Utilities, and Views.
-- **Security:** User passwords and key pairs are stored in encrypted form. Only allowed AMIs, instance types, and security groups can be used (see `utils/resources.js`).
+- **Security:** User passwords and key pairs are stored in encrypted form. Only allowed AMIs, instance types, and security groups can be used (see [`utils/resources.js`](utils/resources.js)).
 
 ## 🧩 Key Components
 
@@ -24,7 +24,7 @@ I created this backend heavy project with minimal frontend(prototype) after pers
 - **Routes:** Define API endpoints and connect them to controllers.
 - **Middlewares:** Handle authentication, session management. . . 
 - **Utilities:** Provide helper functions for AWS SDK, encryption, JWT, and resource whitelisting.
-- **Views:** HTML/CSS/JS for the user interface (see `views/`).
+- **Views:** HTML/CSS/JS for the user interface.
 
 ## 📁 Project Structure
 
@@ -59,6 +59,15 @@ I created this backend heavy project with minimal frontend(prototype) after pers
 - **Security**: JWT, bcrypt
 - **Real-time Communication**: WebSocket
 - **Secure Remote Access**: ssh2
+
+## 🔴 YouTube Demo Video
+
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=keZO1qhzF2c">
+    <img src="https://img.youtube.com/vi/keZO1qhzF2c/0.jpg" alt="Watch the video">
+  </a>
+</div>
+
 
 ## ⚙️ Setup Instructions
 
@@ -95,7 +104,7 @@ I created this backend heavy project with minimal frontend(prototype) after pers
    ```
 
 4. **Configure Environment Variables:**
-   Edit/Create a `.env` file in the root directory with the following content:
+   Edit/Create a [`.env`](.env) file in the root directory with the following content:
    ```ini
    # Database Configuration
    DB_HOST=localhost
